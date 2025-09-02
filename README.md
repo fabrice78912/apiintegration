@@ -1,7 +1,3 @@
-Parfait 👍 Je vais te rédiger un **README clair et pédagogique** qui présente ton projet d’intégration d’une API externe (CurrencyAPI) avec **Spring WebFlux** et la programmation réactive.
-
----
-
 # 📌 Intégration d’une API externe avec Spring WebFlux (Programmation Réactive)
 
 ## 🚀 Objectif
