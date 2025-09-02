@@ -1,11 +1,13 @@
 package com.example.apiintegration.service;
 
-import com.example.common_lib.model.exception.ServiceUnavailableException;
+import com.example.common_lib.model.exception.ServiceUnavailableException1;
+import com.example.common_lib.model.response.ApiResponse1;
 import com.example.common_lib.model.response.ExchangeResponse;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicReference;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -66,15 +68,6 @@ public class ReactiveCurrencyStreamService {
             });
   }
 
-  /** Conversion snapshot CAD -> XOF */
-  public Mono<BigDecimal> convertToXaf(BigDecimal cadAmount) {
-    Double rate = latestRate.get();
-    if (rate == null) {
-      return Mono.error(new ServiceUnavailableException("Taux indisponible. Réessayez plus tard."));
-    }
-    return Mono.just(cadAmount.multiply(BigDecimal.valueOf(rate)));
-  }
-
   /** Flux continu des taux XOF */
   public Flux<Double> rateStream() {
     return Flux.interval(Duration.ofSeconds(5))
@@ -89,5 +82,21 @@ public class ReactiveCurrencyStreamService {
 
   public Double getLatestRate() {
     return latestRate.get();
+  }
+
+  /** Conversion snapshot CAD -> XOF */
+  public Mono<ApiResponse1<BigDecimal>> convertToXaf(BigDecimal cadAmount) {
+    Double rate = latestRate.get();
+
+    if (rate == null) {
+      // On lève l'exception dans le flux Mono
+      return Mono.error(
+          new ServiceUnavailableException1(
+              "Taux indisponible. Réessayez plus tard.", "/currenty/convert"));
+    }
+
+    BigDecimal result = cadAmount.multiply(BigDecimal.valueOf(rate));
+
+    return Mono.just(ApiResponse1.success("Conversion réussie", result, HttpStatus.OK.value()));
   }
 }
