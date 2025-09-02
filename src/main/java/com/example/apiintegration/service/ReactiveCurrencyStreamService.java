@@ -95,4 +95,8 @@ public class ReactiveCurrencyStreamService {
                 .map(rate -> cadAmount.multiply(BigDecimal.valueOf(rate)));
     }
 
+    public Double getLatestRate() {
+        return latestRate.get();
+    }
+
 }
