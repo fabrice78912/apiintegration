@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: apiintegration
+
+exchange:
+  api:
+    base-url: https://api.currencyapi.com/v3/latest
+    key: ${EXCHANGE_API_KEY}
